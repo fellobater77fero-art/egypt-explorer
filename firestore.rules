@@ -1,0 +1,77 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'fellobater77fero@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Admin whitelist collection
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // User profiles: Users can manage their own profile, cannot elevate role
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) &&
+        incoming().email is string &&
+        (!('role' in incoming()) || incoming().role == 'user' || isAdmin());
+      allow update: if (isOwner(userId) || isAdmin()) &&
+        (!incoming().diff(existing()).affectedKeys().hasAny(['role']) || isAdmin());
+      allow delete: if isAdmin();
+
+      // User favorites subcollection
+      match /favorites/{favoriteId} {
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
+    }
+
+    // Public Egyptian Tourist Destinations
+    match /destinations/{destinationId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Public Egyptian Museums
+    match /museums/{museumId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Public Hieroglyphs Dictionary
+    match /hieroglyphs/{glyphId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}

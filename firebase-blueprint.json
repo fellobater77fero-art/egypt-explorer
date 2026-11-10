@@ -1,0 +1,113 @@
+{
+  "entities": {
+    "userProfile": {
+      "title": "UserProfile",
+      "description": "User account profile and settings",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 150 },
+        "preferredLanguage": { "type": "string", "maxLength": 10 },
+        "photoURL": { "type": "string", "maxLength": 500 },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["email", "preferredLanguage"]
+    },
+    "destination": {
+      "title": "Destination",
+      "description": "Tourist destination or archaeological site in Egypt",
+      "type": "object",
+      "properties": {
+        "nameEn": { "type": "string", "maxLength": 150 },
+        "nameAr": { "type": "string", "maxLength": 150 },
+        "category": { "type": "string", "maxLength": 50 },
+        "governorate": { "type": "string", "maxLength": 50 },
+        "descriptionEn": { "type": "string", "maxLength": 3000 },
+        "descriptionAr": { "type": "string", "maxLength": 3000 },
+        "historicalPeriod": { "type": "string", "maxLength": 100 },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "address": { "type": "string", "maxLength": 300 },
+        "visitingHours": { "type": "string", "maxLength": 200 },
+        "ticketPrices": { "type": "string", "maxLength": 200 },
+        "featured": { "type": "boolean" },
+        "source": { "type": "string", "maxLength": 300 },
+        "verifiedDate": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["nameEn", "nameAr", "category", "governorate"]
+    },
+    "museum": {
+      "title": "Museum",
+      "description": "Museum record in Egypt",
+      "type": "object",
+      "properties": {
+        "nameEn": { "type": "string", "maxLength": 150 },
+        "nameAr": { "type": "string", "maxLength": 150 },
+        "governorate": { "type": "string", "maxLength": 50 },
+        "descriptionEn": { "type": "string", "maxLength": 3000 },
+        "descriptionAr": { "type": "string", "maxLength": 3000 },
+        "location": { "type": "string", "maxLength": 300 },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "openingHours": { "type": "string", "maxLength": 200 },
+        "ticketPrice": { "type": "string", "maxLength": 200 },
+        "officialWebsite": { "type": "string", "maxLength": 300 },
+        "featured": { "type": "boolean" },
+        "source": { "type": "string", "maxLength": 300 },
+        "verifiedDate": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["nameEn", "nameAr", "governorate"]
+    },
+    "hieroglyph": {
+      "title": "Hieroglyph",
+      "description": "Ancient Egyptian hieroglyphic sign dictionary entry",
+      "type": "object",
+      "properties": {
+        "gardinerCode": { "type": "string", "maxLength": 20 },
+        "glyph": { "type": "string", "maxLength": 10 },
+        "phonetic": { "type": "string", "maxLength": 50 },
+        "meaningEn": { "type": "string", "maxLength": 200 },
+        "meaningAr": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["gardinerCode", "glyph", "phonetic"]
+    },
+    "favorite": {
+      "title": "Favorite",
+      "description": "User saved favorite destination or museum",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "itemId": { "type": "string", "maxLength": 128 },
+        "itemType": { "type": "string", "enum": ["destination", "museum"] },
+        "title": { "type": "string", "maxLength": 150 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "itemId", "itemType", "title"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "userProfile",
+      "description": "Private user profile settings and preferences"
+    },
+    "/destinations/{destinationId}": {
+      "schema": "destination",
+      "description": "Public verified Egyptian tourist destinations"
+    },
+    "/museums/{museumId}": {
+      "schema": "museum",
+      "description": "Public verified Egyptian museums"
+    },
+    "/hieroglyphs/{signId}": {
+      "schema": "hieroglyph",
+      "description": "Public Egyptian hieroglyphic dictionary entries"
+    },
+    "/users/{userId}/favorites/{favoriteId}": {
+      "schema": "favorite",
+      "description": "User saved favorites collection"
+    }
+  }
+}

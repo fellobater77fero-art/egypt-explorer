@@ -1,0 +1,6 @@
+{
+  "name": "Egypt Explorer",
+  "description": "Your Smart Guide to Egypt: Discover, explore, and experience archaeological sites, world-class museums, ancient Egyptian hieroglyphics, rich culture, and AI travel assistance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
